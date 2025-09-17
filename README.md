@@ -1,4 +1,4 @@
-# NAPS Starter Kit
+# First-class-frontend
 
 _aka **Nextjs15-Auth-Prisma-Shadcn Starter Kit**_
 
