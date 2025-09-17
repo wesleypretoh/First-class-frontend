@@ -1,0 +1,186 @@
+# NAPS Starter Kit
+
+_aka **Nextjs15-Auth-Prisma-Shadcn Starter Kit**_
+
+A multilingual, credential-based application starter for Next.js 15. The kit ships with:
+
+- First-class NextAuth + Prisma credentials flow backed by PostgreSQL (Neon-friendly).
+- shadcn/ui + Tailwind dashboard shell with theme and color pickers.
+- English/Thai localization, including locale-aware routing, middleware, and auth screens.
+- Opinionated project structure designed for rapid SaaS or admin dashboards.
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router, Server Components, Turbopack)
+- **Language:** TypeScript
+- **Auth:** NextAuth (credentials provider) with Prisma adapter
+- **Database:** PostgreSQL (Neon by default) via Prisma ORM
+- **Styling/UI:** Tailwind CSS, shadcn/ui primitives, Radix UI icons/interactions
+- **Forms & Validation:** react-hook-form + Zod
+- **Internationalization:** Custom locale router (`/` for English, `/th` for Thai) with dictionary loader
+- **Tooling:** ESLint 9 (Next.js config), TypeScript, Turbopack dev/build
+
+## Project Structure
+
+```
+./
+├─ actions/                         # Server actions (login, register, etc.)
+├─ app/
+│  ├─ api/auth/[...nextauth]/route.ts  # NextAuth handler
+│  ├─ dashboard/
+│  │  ├─ render-dashboard-page.tsx     # Locale-aware renderer for /dashboard
+│  │  ├─ settings/
+│  │  │  ├─ page.tsx                   # Default-locale settings entry
+│  │  │  └─ render-settings-page.tsx   # Shared settings renderer
+│  │  └─ page.tsx                      # Default-locale dashboard entry
+│  ├─ login/page.tsx                   # Default-locale login
+│  ├─ signup/page.tsx                  # Default-locale signup
+│  ├─ [lang]/                          # Locale-prefixed routes
+│  │  ├─ page.tsx                      # Landing page fallback /[lang]
+│  │  ├─ dashboard/
+│  │  │  ├─ page.tsx                   # /[lang]/dashboard
+│  │  │  └─ settings/page.tsx          # /[lang]/dashboard/settings
+│  │  ├─ login/page.tsx                # /[lang]/login
+│  │  └─ signup/page.tsx               # /[lang]/signup
+│  └─ page.tsx                         # Landing page (login form)
+├─ auth.config.ts                     # NextAuth credential provider config
+├─ components/                        # UI components & shadcn wrappers (language-aware variants)
+├─ hooks/
+│  └─ use-current-locale.ts           # Client hook to read active locale from pathname
+├─ lib/
+│  ├─ auth-options.ts                 # Shared NextAuth adapter/session options
+│  ├─ prisma.ts                       # Prisma client singleton
+│  └─ i18n/
+│     ├─ config.ts                    # Locale registry & helpers
+│     ├─ get-dictionary.ts            # Translation loader & typings
+│     └─ routing.ts                   # Locale-aware path utilities
+├─ locales/                           # Dictionary sources (en, th, ...)
+├─ middleware.ts                      # Auth guard + locale-aware redirects
+├─ prisma/schema.prisma               # Database schema definitions
+├─ schemas/                           # Zod schemas (login/register)
+├─ public/                            # Static assets
+├─ package.json                       # Scripts & dependencies
+└─ tsconfig.json                      # TypeScript config
+```
+
+## Prerequisites
+
+- Node.js 18.18+ or 20+
+- Yarn (preferred) or npm
+- PostgreSQL instance (Neon connection string used in examples)
+
+## Environment Variables
+
+Create a `.env` file in the project root with the following keys:
+
+```bash
+DATABASE_URL="postgresql://<user>:<password>@<host>/<db>?sslmode=require"
+AUTH_SECRET="<generated_nextauth_secret>"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+- Generate a secret with `npx auth secret`.
+- Neon’s connection string requires `sslmode=require`.
+- Update `NEXTAUTH_URL` to your production domain when deploying so NextAuth can build absolute URLs.
+
+## Setup & Local Development
+
+```bash
+# 1. Install dependencies
+yarn install
+
+# 2. Generate the Prisma client
+yarn prisma generate
+
+# 3. Apply database migrations
+yarn prisma migrate dev
+
+# 4. Start the dev server (Turbopack)
+yarn dev
+```
+
+Visit `http://localhost:3000` for the English login form. Thai lives at `/th/login`. Registration is available at `/signup` and `/th/signup`. The dashboard requires an authenticated session at `/dashboard` (or `/th/dashboard`).
+
+### Available Scripts
+
+- `yarn dev` – Run Next.js with Turbopack
+- `yarn build` – Production build with Turbopack
+- `yarn start` – Start the compiled app
+- `yarn lint` – ESLint (Next.js config)
+- `yarn prisma generate` – Generate Prisma client
+- `yarn prisma migrate dev` – Create & apply migrations in dev
+- `yarn prisma migrate deploy` – Apply migrations in production
+
+## Theming
+
+- **Default palette:** Neutral tone declared at the top of `app/globals.css`; the settings page exposes an “Apricot” accent option out of the box.
+- **Persistence:** `lib/color-theme.ts` stores the active accent in both `localStorage` and cookies so SSR pages render with the correct colors.
+- **Mechanics:** The selected theme toggles a `data-color-theme` attribute on `<html>` which drives CSS variable blocks (e.g. `[data-color-theme="apricot"]`).
+- **Custom palettes:** Add entries to `COLOR_THEME_OPTIONS`, define matching CSS variables in `app/globals.css`, and the picker will render them automatically.
+- **Tools:** [Zippy Starter’s shadcn theme generator](https://zippystarter.com/tools/shadcn-ui-theme-generator) and [shadcnstudio’s generator](https://shadcnstudio.com/theme-generator) provide compatible token sets.
+
+## Internationalization
+
+- **Routing model:** English occupies the root (`/login`, `/dashboard`, …). Additional locales mount at `/[lang]/…` (Thai currently at `/th/...`). Server pages use locale-aware render helpers (`app/dashboard/**/render-*.tsx`) to avoid duplication.
+- **Dictionaries:** Translation dictionaries live in `locales/<code>.ts` and are loaded through `lib/i18n/get-dictionary.ts`. They cover navigation, theme settings, auth forms, team switcher, and quick links.
+- **Language pickers:** `components/language-select.tsx` recalculates the current URL in the chosen locale while preserving query parameters. The picker appears in the dashboard settings card and in the auth card footers (compact `text-xs` trigger).
+- **Middleware + hooks:** `middleware.ts` maintains locale-aware redirects, and `useCurrentLocale()` exposes the active locale to client components (e.g. sign-out button) to keep callbacks in-language.
+- **Add a language:** 1) Extend `SUPPORTED_LOCALES` in `lib/i18n/config.ts`. 2) Create `locales/<code>.ts` mirroring the dictionary shape. 3) Translate any remaining hard-coded copy. 4) Ensure links/middleware use `buildLocalizedPath` when routing.
+- **Future ideas:** Persist locale preference via cookie, integrate automated translation imports, or add Accept-Language detection in middleware.
+
+## Authentication Flow
+
+- **Register:** `actions/register.ts` validates with `RegisterSchema`, hashes with `bcryptjs`, and creates users via Prisma.
+- **Login:** `actions/login.ts` verifies credentials before delegating to `signIn`. Client-side logic handles surfacing errors and redirecting to the locale-specific dashboard.
+- **Session Guard:** `middleware.ts` checks the NextAuth JWT, redirecting unauthenticated users to the locale-appropriate `/login` route and keeping authenticated users away from auth pages.
+- **Dashboard:** Uses `getServerSession` to protect content and includes a locale-aware `SignOutButton` that returns users to the correct `/[lang]/login` page.
+
+## Database & Prisma
+
+- `prisma/schema.prisma` defines `User` and `Account` models compatible with NextAuth’s Prisma adapter.
+- Modify the schema and run `yarn prisma migrate dev` locally; use `yarn prisma migrate deploy` when promoting to production.
+- Ensure the `DATABASE_URL` points to the correct environment (Neon, Supabase, RDS, etc.).
+
+## Deployment
+
+### Vercel
+
+1. Push the repository to GitHub.
+2. Create a Vercel project pointing at the repo root.
+3. Set environment variables: `DATABASE_URL`, `AUTH_SECRET`, and `NEXTAUTH_URL` (to the production domain).
+4. Use the default build command (`yarn install && yarn build`).
+5. After deployment, run migrations against production:
+   ```bash
+   DATABASE_URL=... yarn prisma migrate deploy
+   ```
+
+### Other Platforms
+
+Any Node-capable host (Render, Railway, Fly.io, Docker, etc.) works. Typical steps:
+
+1. Install dependencies (`yarn install`).
+2. Apply migrations (`yarn prisma migrate deploy`).
+3. Start the app (`yarn start`).
+
+Use a process manager (PM2, Docker) if you need zero-downtime restarts.
+
+## Development Tips
+
+- Turbopack is enabled; switch to Webpack by adjusting the `dev`/`build` scripts if needed.
+- Forms rely on `react-hook-form` + Zod—update schemas and server actions together when adding fields.
+- UI primitives in `components/ui` come from shadcn. Add more with `npx shadcn@latest add <component>`.
+- No automated tests are bundled. Introduce Vitest or Playwright as your project grows.
+- **Add a page:** drop a `page.tsx` under `app/<route>/`. To localize it, mirror the file under `app/[lang]/<route>/` or use the shared render helpers pattern.
+- **Protect a page:** run logic server-side and check `getServerSession`, or rely on middleware for broad guards.
+- **Expose publicly:** list the route in `authRoutes` within `middleware.ts`; otherwise visitors are redirected to login.
+- **Navigation:** Update `components/app-sidebar.tsx` and locale dictionaries to surface new sections in every language.
+
+## Troubleshooting
+
+- **Auth warnings:** Ensure `NEXTAUTH_URL` and `AUTH_SECRET` are present locally and in production; restart the dev server after changes.
+- **Prisma client issues:** Delete `node_modules/.prisma` and rerun `yarn prisma generate` if the generated client becomes stale.
+- **Database connectivity:** Neon requires TLS (`sslmode=require`). Review IP allow lists or pooling settings if connections fail.
+
+## License
+
+No explicit license is provided. Add one before distributing or open-sourcing the project.
