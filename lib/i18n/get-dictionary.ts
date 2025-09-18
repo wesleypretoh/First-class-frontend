@@ -31,6 +31,14 @@ export type SettingsDictionary = {
 
 export type BaseDictionary = {
   languageNames: Record<Locale, string>
+  appName: string
+  pageTitles: {
+    home: string
+    login: string
+    signup: string
+    dashboard: string
+    settings: string
+  }
   navigation: {
     platformLabel: string
     workspace: {
@@ -59,8 +67,29 @@ export type BaseDictionary = {
       name: string
       url: string
     }[]
+    adminConsole: {
+      title: string
+      items: {
+        title: string
+        path: string
+      }[]
+    }
   }
   settings: SettingsDictionary
+  admin: {
+    breadcrumb: {
+      home: string
+      dashboard: string
+      admin: string
+    }
+    pageTitle: string
+    pageDescription: string
+    sections: {
+      overview: string
+      management: string
+    }
+    quickLinkLabel: string
+  }
   dashboard: {
     breadcrumb: {
       home: string
@@ -84,7 +113,11 @@ export type BaseDictionary = {
     heading: string
     addTeam: string
     defaultTeamName: string
-    defaultPlan: string
+  }
+  userRoles: {
+    ADMIN: string
+    STAFF: string
+    USER: string
   }
   auth: {
     login: {

@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 
 import {
@@ -8,6 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+
+export const metadata: Metadata = {
+  title: "Home",
+}
 
 export default function Home() {
   return (

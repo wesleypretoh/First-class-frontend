@@ -5,6 +5,14 @@ const dictionary: BaseDictionary = {
     en: "English",
     th: "ไทย",
   },
+  appName: "First-Class",
+  pageTitles: {
+    home: "Home",
+    login: "Login",
+    signup: "Signup",
+    dashboard: "Dashboard",
+    settings: "Settings",
+  },
   navigation: {
     platformLabel: "Platform",
     workspace: {
@@ -41,6 +49,12 @@ const dictionary: BaseDictionary = {
       { name: "Partners", url: "https://nextjs.org/partners" },
       { name: "Release Notes", url: "https://nextjs.org/blog" },
     ],
+    adminConsole: {
+      title: "Admin Console",
+      items: [
+        { title: "Users Management", path: "dashboard/admin" },
+      ],
+    },
   },
   settings: {
     breadcrumb: {
@@ -65,6 +79,23 @@ const dictionary: BaseDictionary = {
       description: "Preview how the dashboard could look in English or Thai.",
     },
   },
+  admin: {
+    breadcrumb: {
+      home: "Home",
+      dashboard: "Dashboard",
+      admin: "Admin Console",
+    },
+    pageTitle: "Admin console",
+    pageDescription:
+      "High-level controls for user roles, permissions, and operational tasks.",
+    sections: {
+      overview:
+        "Use this space to coordinate administrator-only workflows and review key metrics before broadcasting changes.",
+      management:
+        "Extend this page with cards, tables, or integrations required to manage your organization at scale.",
+    },
+    quickLinkLabel: "Admin Console",
+  },
   dashboard: {
     breadcrumb: {
       home: "Home",
@@ -88,7 +119,11 @@ const dictionary: BaseDictionary = {
     heading: "Teams",
     addTeam: "Add team",
     defaultTeamName: "Team",
-    defaultPlan: "Starter",
+  },
+  userRoles: {
+    ADMIN: "Admin",
+    STAFF: "Operation",
+    USER: "Member",
   },
   auth: {
     login: {

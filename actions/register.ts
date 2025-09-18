@@ -2,6 +2,7 @@
 
 import bcrypt from "bcryptjs"
 
+import { DEFAULT_USER_ROLE } from "@/lib/auth/roles"
 import prisma from "@/lib/prisma"
 import { RegisterSchema } from "@/schemas"
 
@@ -33,6 +34,7 @@ export const register = async (values: unknown) => {
         name,
         email,
         password: hashedPassword,
+        role: DEFAULT_USER_ROLE,
       },
     })
 

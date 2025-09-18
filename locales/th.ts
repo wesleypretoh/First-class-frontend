@@ -5,6 +5,14 @@ const dictionary: BaseDictionary = {
     en: "English",
     th: "ไทย",
   },
+  appName: "First-Class",
+  pageTitles: {
+    home: "หน้าหลัก",
+    login: "เข้าสู่ระบบ",
+    signup: "สมัครสมาชิก",
+    dashboard: "แดชบอร์ด",
+    settings: "การตั้งค่า",
+  },
   navigation: {
     platformLabel: "แพลตฟอร์ม",
     workspace: {
@@ -41,6 +49,12 @@ const dictionary: BaseDictionary = {
       { name: "พาร์ทเนอร์", url: "https://nextjs.org/partners" },
       { name: "บันทึกการอัปเดต", url: "https://nextjs.org/blog" },
     ],
+    adminConsole: {
+      title: "ศูนย์ควบคุมผู้ดูแล",
+      items: [
+        { title: "การจัดการผู้ใช้", path: "dashboard/admin" },
+      ],
+    },
   },
   settings: {
     breadcrumb: {
@@ -62,6 +76,23 @@ const dictionary: BaseDictionary = {
       title: "ภาษา",
       description: "ดูตัวอย่างแดชบอร์ดในภาษาไทยหรือภาษาอังกฤษ",
     },
+  },
+  admin: {
+    breadcrumb: {
+      home: "หน้าหลัก",
+      dashboard: "แดชบอร์ด",
+      admin: "ศูนย์ควบคุมผู้ดูแล",
+    },
+    pageTitle: "ศูนย์ควบคุมผู้ดูแล",
+    pageDescription:
+      "พื้นที่สำหรับควบคุมบทบาทผู้ใช้ จัดการสิทธิ์ และดูการดำเนินงานระดับสูง",
+    sections: {
+      overview:
+        "ใช้หน้าส่วนนี้เพื่อประสานงานงานที่จำเป็นสำหรับผู้ดูแลระบบและตรวจสอบข้อมูลสำคัญก่อนเผยแพร่การเปลี่ยนแปลง",
+      management:
+        "คุณสามารถเพิ่มการ์ด ตาราง หรืออินทิเกรชันที่จำเป็นต่อการบริหารองค์กรได้ที่นี่",
+    },
+    quickLinkLabel: "ศูนย์ควบคุมผู้ดูแล",
   },
   dashboard: {
     breadcrumb: {
@@ -86,7 +117,11 @@ const dictionary: BaseDictionary = {
     heading: "ทีม",
     addTeam: "เพิ่มทีม",
     defaultTeamName: "ทีม",
-    defaultPlan: "เริ่มต้น",
+  },
+  userRoles: {
+    ADMIN: "Admin",
+    STAFF: "Operation",
+    USER: "Member",
   },
   auth: {
     login: {

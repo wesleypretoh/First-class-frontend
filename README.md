@@ -9,6 +9,16 @@ A multilingual, credential-based application starter for Next.js 15. The kit shi
 - English/Thai localization, including locale-aware routing, middleware, and auth screens.
 - Opinionated project structure designed for rapid SaaS or admin dashboards.
 
+## About
+
+First-Class pairs authenticated SaaS scaffolding with multilingual routing so you can launch dashboards quickly. The layout stays approachable for newcomers while leaving room for production hardening.
+
+### Page Title & SEO
+
+- **Global template** – `app/layout.tsx` defines the default title (`First-Class`) and template (`%s | First-Class`). Update this file to change the app name or description shown across tabs and search results.
+- **Default-locale pages** – English routes (for example `app/page.tsx`, `app/login/page.tsx`, `app/dashboard/page.tsx`) export a `metadata` object. Edit the `title` field there to adjust the tab title.
+- **Localized pages** – `app/[lang]/…/page.tsx` files implement `generateMetadata` to pull titles from the locale dictionary. Modify the `pageTitles` entries inside `locales/en.ts` and `locales/th.ts` to keep translations in sync.
+
 ## Tech Stack
 
 - **Framework:** Next.js 15 (App Router, Server Components, Turbopack)
@@ -27,8 +37,12 @@ A multilingual, credential-based application starter for Next.js 15. The kit shi
 ├─ actions/                         # Server actions (login, register, etc.)
 ├─ app/
 │  ├─ api/auth/[...nextauth]/route.ts  # NextAuth handler
+│  ├─ layout.tsx                       # Root layout + metadata template
 │  ├─ dashboard/
 │  │  ├─ render-dashboard-page.tsx     # Locale-aware renderer for /dashboard
+│  │  ├─ admin/
+│  │  │  ├─ page.tsx                   # Default-locale admin console entry
+│  │  │  └─ render-admin-page.tsx      # Shared admin renderer
 │  │  ├─ settings/
 │  │  │  ├─ page.tsx                   # Default-locale settings entry
 │  │  │  └─ render-settings-page.tsx   # Shared settings renderer
@@ -39,6 +53,7 @@ A multilingual, credential-based application starter for Next.js 15. The kit shi
 │  │  ├─ page.tsx                      # Landing page fallback /[lang]
 │  │  ├─ dashboard/
 │  │  │  ├─ page.tsx                   # /[lang]/dashboard
+│  │  │  ├─ admin/page.tsx             # /[lang]/dashboard/admin
 │  │  │  └─ settings/page.tsx          # /[lang]/dashboard/settings
 │  │  ├─ login/page.tsx                # /[lang]/login
 │  │  └─ signup/page.tsx               # /[lang]/signup
@@ -134,6 +149,27 @@ Visit `http://localhost:3000` for the English login form. Thai lives at `/th/log
 - **Login:** `actions/login.ts` verifies credentials before delegating to `signIn`. Client-side logic handles surfacing errors and redirecting to the locale-specific dashboard.
 - **Session Guard:** `middleware.ts` checks the NextAuth JWT, redirecting unauthenticated users to the locale-appropriate `/login` route and keeping authenticated users away from auth pages.
 - **Dashboard:** Uses `getServerSession` to protect content and includes a locale-aware `SignOutButton` that returns users to the correct `/[lang]/login` page.
+- **Role propagation:** NextAuth sessions carry a `user.role` value (`ADMIN`, `STAFF`, or `USER`) pulled from Prisma and exposed to client components via `lib/auth-options.ts` callbacks.
+
+## Role-Based Access Control
+
+- **Roles & defaults:** The Prisma schema defines a `Role` enum (`prisma/schema.prisma`). New registrations receive `USER` by default.
+- **Access rules:** `lib/auth/permissions.ts` declares `ROUTE_ACCESS_RULES`, mapping normalized pathname prefixes (for example `/dashboard/admin`) to the roles allowed to open them. `getAllowedRolesForPath()` picks the most specific match and returns the permitted roles, while `hasAccessToPath()` checks the current user role against that list.
+- **Guard usage:** Server components call `hasAccessToPath()` before rendering protected pages (see `app/dashboard/**/render-*.tsx`), and the middleware invokes the same helper so browsers are redirected away from paths they cannot open.
+- **Settings access:** `/dashboard/settings` is now visible to every role so all members can configure their own preferences.
+- **Navigation filtering:** `components/app-sidebar.tsx` filters each section with `hasAccessToPath()` so the sidebar only shows routes returned from the access map. The active role label is also pulled from the per-locale `userRoles` dictionary for quick debugging.
+- **Localized labels:** Role display strings live in each locale dictionary (`locales/<code>.ts`) under `userRoles`, so the sidebar shows `Admin`, `Operation`, or `Member` in the selected language.
+- **Updating roles:** An admin-only API route at `PATCH /api/users/[id]/role` accepts `{ "role": "ADMIN" | "STAFF" | "USER" }` validated by `UpdateUserRoleSchema`.
+- **Existing data:** After pulling the latest schema, run `yarn prisma migrate dev` and backfill roles for existing users (e.g. `UPDATE "User" SET role='USER' WHERE role IS NULL;`). Production deployments should apply the migration with `yarn prisma migrate deploy` before rolling out new code.
+- **Promoting an admin:** The first account you register will be a `USER`. If you need admin access, update the role directly in the database once the record exists:
+
+  ```sql
+  UPDATE "User"
+  SET role = 'ADMIN'
+  WHERE id = '<user_id>';
+  ```
+
+  Replace `<user_id>` with the cuid generated for the target user. Afterwards, the session will reflect the new role on the next login (or after the JWT refresh cycle).
 
 ## Database & Prisma
 

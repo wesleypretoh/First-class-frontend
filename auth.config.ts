@@ -31,7 +31,10 @@ const authConfig = {
           return null
         }
 
-        return user
+        const { password: _password, ...sanitizedUser } = user
+        void _password
+
+        return sanitizedUser
       },
     }),
   ],

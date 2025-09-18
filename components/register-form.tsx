@@ -4,6 +4,8 @@ import Link from "next/link"
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { z } from "zod"
 
 import { register } from "@/actions/register"
@@ -36,6 +38,7 @@ type RegisterFormProps = {
 }
 
 export const RegisterForm = ({ dictionary }: RegisterFormProps) => {
+  const router = useRouter()
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -57,13 +60,28 @@ export const RegisterForm = ({ dictionary }: RegisterFormProps) => {
     startTransition(async () => {
       const data = await register(values)
 
-      if (data?.success) {
-        setSuccess(data.success)
-        form.reset()
-      }
-
       if (data?.error) {
         setError(data.error)
+        return
+      }
+
+      if (data?.success) {
+        setSuccess(data.success)
+
+        const authResult = await signIn("credentials", {
+          email: values.email,
+          password: values.password,
+          redirect: false,
+        })
+
+        if (authResult?.error) {
+          setError(authResult.error)
+          return
+        }
+
+        form.reset()
+        router.replace(buildLocalizedPath(locale, "dashboard"))
+        router.refresh()
       }
     })
   }

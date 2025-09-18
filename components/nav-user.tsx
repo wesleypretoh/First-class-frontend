@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { signOut } from "next-auth/react"
-import { usePathname, useRouter } from "next/navigation"
+import * as React from "react";
+import { signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
   ChevronsUpDown,
@@ -10,13 +10,9 @@ import {
   LogOut,
   Settings,
   Sparkles,
-} from "lucide-react"
+} from "lucide-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,46 +21,51 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { buildLocalizedPath, extractLocaleFromPathname } from "@/lib/i18n/routing"
+} from "@/components/ui/sidebar";
+import {
+  buildLocalizedPath,
+  extractLocaleFromPathname,
+} from "@/lib/i18n/routing";
 
 type NavUserLabels = {
-  upgrade: string
-  settings: string
-  notifications: string
-  billing: string
-  logout: string
-}
+  upgrade: string;
+  settings: string;
+  notifications: string;
+  billing: string;
+  logout: string;
+};
 
 export function NavUser({
   user,
   labels,
 }: {
   user: {
-    name?: string | null
-    email?: string | null
-    avatar?: string | null
-  }
-  labels: NavUserLabels
+    name?: string | null;
+    email?: string | null;
+    avatar?: string | null;
+    role?: string | null;
+  };
+  labels: NavUserLabels;
 }) {
-  const { isMobile } = useSidebar()
-  const router = useRouter()
-  const pathname = usePathname()
+  const { isMobile } = useSidebar();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const locale = React.useMemo(
     () => extractLocaleFromPathname(pathname ?? "/").locale,
-    [pathname],
-  )
+    [pathname]
+  );
 
-  const displayName = user.name ?? "User"
-  const displayEmail = user.email ?? ""
-  const avatarUrl = user.avatar ?? undefined
+  const displayName = user.name ?? "User";
+  const displayEmail = user.email ?? "";
+  const secondaryLine = displayEmail;
+  const avatarUrl = user.avatar ?? undefined;
 
   return (
     <SidebarMenu>
@@ -83,7 +84,9 @@ export function NavUser({
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{displayName}</span>
-                <span className="truncate text-xs">{displayEmail}</span>
+                {secondaryLine && (
+                  <span className="truncate text-xs">{secondaryLine}</span>
+                )}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -104,7 +107,9 @@ export function NavUser({
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{displayName}</span>
-                  <span className="truncate text-xs">{displayEmail}</span>
+                  {secondaryLine && (
+                    <span className="truncate text-xs">{secondaryLine}</span>
+                  )}
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -119,8 +124,8 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onSelect={(event) => {
-                  event.preventDefault()
-                  router.push(buildLocalizedPath(locale, "dashboard/settings"))
+                  event.preventDefault();
+                  router.push(buildLocalizedPath(locale, "dashboard/settings"));
                 }}
               >
                 <Settings />
@@ -138,8 +143,10 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={(event) => {
-                event.preventDefault()
-                void signOut({ callbackUrl: buildLocalizedPath(locale, "login") })
+                event.preventDefault();
+                void signOut({
+                  callbackUrl: buildLocalizedPath(locale, "login"),
+                });
               }}
             >
               <LogOut />
@@ -149,5 +156,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

@@ -31,6 +31,7 @@ import { authOptions } from "@/lib/auth-options"
 import type { Locale } from "@/lib/i18n/config"
 import { buildLocalizedPath } from "@/lib/i18n/routing"
 import { getDictionary } from "@/lib/i18n/get-dictionary"
+import { hasAccessToPath } from "@/lib/auth/permissions"
 
 export async function renderSettingsPage(locale: Locale) {
   const session = await getServerSession({
@@ -40,6 +41,10 @@ export async function renderSettingsPage(locale: Locale) {
 
   if (!session?.user) {
     redirect("/login")
+  }
+
+  if (!hasAccessToPath("/dashboard/settings", session.user.role)) {
+    redirect(buildLocalizedPath(locale, "dashboard"))
   }
 
   const dictionary = await getDictionary(locale)
