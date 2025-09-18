@@ -69,6 +69,11 @@ First-Class pairs authenticated SaaS scaffolding with multilingual routing so yo
 │     ├─ config.ts                    # Locale registry & helpers
 │     ├─ get-dictionary.ts            # Translation loader & typings
 │     └─ routing.ts                   # Locale-aware path utilities
+├─ app/api/                           # Route handlers (REST-ish API)
+│  └─ users/
+│     └─ [id]/                        # Dynamic segments for user operations
+│        ├─ route.ts                  # DELETE handler (admin-only delete user)
+│        └─ role/route.ts             # PATCH handler to change a user's role
 ├─ locales/                           # Dictionary sources (en, th, ...)
 ├─ middleware.ts                      # Auth guard + locale-aware redirects
 ├─ prisma/schema.prisma               # Database schema definitions
