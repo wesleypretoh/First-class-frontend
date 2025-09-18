@@ -98,6 +98,15 @@ NEXTAUTH_URL="http://localhost:3000"
 - Neon’s connection string requires `sslmode=require`.
 - Update `NEXTAUTH_URL` to your production domain when deploying so NextAuth can build absolute URLs.
 
+### Quick Start
+
+1. Clone the repo and move into the folder.
+2. Run `yarn install` to grab dependencies.
+3. Create `.env` with database credentials, an `AUTH_SECRET`, and `NEXTAUTH_URL` (see above).
+4. Execute `yarn prisma migrate dev` to create/update the database schema.
+5. Start the dev server with `yarn dev` and open `http://localhost:3000`.
+6. Register your first account (it will be a `USER`), adjust the role in the database if you need an admin, and begin customizing the dashboard.
+
 ## Setup & Local Development
 
 ```bash
