@@ -52,7 +52,8 @@ const dictionary: BaseDictionary = {
     adminConsole: {
       title: "Admin Console",
       items: [
-        { title: "Users Management", path: "dashboard/admin" },
+        { title: "Overview", path: "dashboard/admin" },
+        { title: "Users Management", path: "dashboard/admin/users" },
       ],
     },
   },
@@ -84,6 +85,7 @@ const dictionary: BaseDictionary = {
       home: "Home",
       dashboard: "Dashboard",
       admin: "Admin Console",
+      users: "Users",
     },
     pageTitle: "Admin console",
     pageDescription:
@@ -95,6 +97,51 @@ const dictionary: BaseDictionary = {
         "Extend this page with cards, tables, or integrations required to manage your organization at scale.",
     },
     quickLinkLabel: "Admin Console",
+    usersPage: {
+      title: "Users management",
+      description:
+        "Review account details, adjust roles, and audit activity across your workspace.",
+      searchPlaceholder: "Search by name or email...",
+      roleFilterLabel: "Role",
+      roleFilterAll: "All roles",
+      table: {
+        columns: {
+          name: "Name",
+          email: "Email",
+          role: "Role",
+          createdAt: "Joined",
+        },
+        empty: "No users match your filters.",
+        noName: "Unnamed",
+        previous: "Previous",
+        next: "Next",
+        actions: "Actions",
+      },
+      actions: {
+        label: "Actions",
+        changeRole: "Change role",
+        delete: "Delete user",
+      },
+      roleDialog: {
+        title: "Update role",
+        description:
+          "Select a new role for this user. Changes take effect immediately.",
+        selectLabel: "Role",
+        submit: "Save changes",
+        cancel: "Cancel",
+        success: "Role updated successfully.",
+        error: "Unable to update the role right now.",
+      },
+      deleteDialog: {
+        title: "Delete user",
+        description:
+          "This action permanently removes the account and cannot be undone.",
+        confirm: "Delete user",
+        cancel: "Cancel",
+        success: "User deleted successfully.",
+        error: "Unable to delete the user right now.",
+      },
+    },
   },
   dashboard: {
     breadcrumb: {

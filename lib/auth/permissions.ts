@@ -21,6 +21,10 @@ const normalizePath = (path: string): string => {
 
 export const ROUTE_ACCESS_RULES: RouteAccessRule[] = [
   {
+    route: "/dashboard/admin/users",
+    allowedRoles: ["ADMIN", "STAFF"],
+  },
+  {
     route: "/dashboard/admin",
     allowedRoles: ["ADMIN"],
   },

@@ -52,7 +52,8 @@ const dictionary: BaseDictionary = {
     adminConsole: {
       title: "ศูนย์ควบคุมผู้ดูแล",
       items: [
-        { title: "การจัดการผู้ใช้", path: "dashboard/admin" },
+        { title: "ภาพรวม", path: "dashboard/admin" },
+        { title: "การจัดการผู้ใช้", path: "dashboard/admin/users" },
       ],
     },
   },
@@ -82,6 +83,7 @@ const dictionary: BaseDictionary = {
       home: "หน้าหลัก",
       dashboard: "แดชบอร์ด",
       admin: "ศูนย์ควบคุมผู้ดูแล",
+      users: "ผู้ใช้",
     },
     pageTitle: "ศูนย์ควบคุมผู้ดูแล",
     pageDescription:
@@ -93,6 +95,51 @@ const dictionary: BaseDictionary = {
         "คุณสามารถเพิ่มการ์ด ตาราง หรืออินทิเกรชันที่จำเป็นต่อการบริหารองค์กรได้ที่นี่",
     },
     quickLinkLabel: "ศูนย์ควบคุมผู้ดูแล",
+    usersPage: {
+      title: "การจัดการผู้ใช้",
+      description:
+        "ตรวจสอบข้อมูลสมาชิก ปรับสิทธิ์การใช้งาน และติดตามประวัติการเข้าใช้งานของทีม",
+      searchPlaceholder: "ค้นหาด้วยชื่อหรืออีเมล...",
+      roleFilterLabel: "บทบาท",
+      roleFilterAll: "ทุกบทบาท",
+      table: {
+        columns: {
+          name: "ชื่อ",
+          email: "อีเมล",
+          role: "บทบาท",
+          createdAt: "เข้าร่วมเมื่อ",
+        },
+        empty: "ไม่พบบัญชีที่ตรงกับตัวกรอง",
+        noName: "ไม่มีชื่อ",
+        previous: "ก่อนหน้า",
+        next: "ถัดไป",
+        actions: "การดำเนินการ",
+      },
+      actions: {
+        label: "การดำเนินการ",
+        changeRole: "ปรับบทบาท",
+        delete: "ลบบัญชี",
+      },
+      roleDialog: {
+        title: "อัปเดตบทบาท",
+        description:
+          "เลือกบทบาทใหม่สำหรับผู้ใช้นี้ การเปลี่ยนแปลงมีผลทันที",
+        selectLabel: "บทบาท",
+        submit: "บันทึกการเปลี่ยนแปลง",
+        cancel: "ยกเลิก",
+        success: "อัปเดตบทบาทเรียบร้อยแล้ว",
+        error: "ไม่สามารถอัปเดตบทบาทได้ในขณะนี้",
+      },
+      deleteDialog: {
+        title: "ลบบัญชีผู้ใช้",
+        description:
+          "การดำเนินการนี้จะลบบัญชีถาวรและไม่สามารถยกเลิกได้",
+        confirm: "ลบบัญชี",
+        cancel: "ยกเลิก",
+        success: "ลบบัญชีเรียบร้อยแล้ว",
+        error: "ไม่สามารถลบบัญชีได้ในขณะนี้",
+      },
+    },
   },
   dashboard: {
     breadcrumb: {

@@ -180,6 +180,27 @@ Visit `http://localhost:3000` for the English login form. Thai lives at `/th/log
 
   Replace `<user_id>` with the cuid generated for the target user. Afterwards, the session will reflect the new role on the next login (or after the JWT refresh cycle).
 
+## Admin API Endpoints
+
+- `PATCH /api/users/:id/role` – Admin-only. Validates `{ "role": "ADMIN" | "STAFF" | "USER" }`, updates the record via Prisma, and returns the updated user. Responds with `401/403` on unauthorized access.
+- `DELETE /api/users/:id` – Admin-only. Removes the user account and returns `{ success: true }` when successful. Emits `401/403` if the caller lacks permission.
+
+These handlers live in `app/api/.../route.ts` files where the exported function names match HTTP verbs (`export async function PATCH`, `DELETE`, `GET`, etc.). Inside each handler:
+
+- We await `context.params` before reading route segments (`const { id } = await context.params`) to satisfy Next.js’ streaming route rules.
+- Authorization runs up front via `getServerSession`, and we short-circuit with `401/403` responses when the caller’s role is insufficient.
+- Database operations stay thin—each handler calls Prisma directly for now. If logic grows, extract helpers (e.g. `await deleteUser(id)`) into `lib/services/...` to keep route files small.
+- Non-2xx responses return `{ error: string }` bodies to simplify client-side error handling.
+
+### Adding Another Endpoint
+
+1. Create a folder matching the resource path (for example, `app/api/food/[id]/route.ts`).
+2. Export functions that match the verbs you need (`GET`, `POST`, `PATCH`, `DELETE`). Each file can expose multiple verbs, but keep one resource per file.
+3. Reuse the session + role check pattern and await `context.params` before destructuring.
+4. Return JSON with explicit status codes, mirroring the error shape used elsewhere so clients can surface consistent alerts.
+
+Because each route file is isolated, naming the handler `DELETE` in multiple files does not collide. When logic repeats (logging, validation, etc.), build small utilities and import them into the relevant handlers.
+
 ## Database & Prisma
 
 - `prisma/schema.prisma` defines `User` and `Account` models compatible with NextAuth’s Prisma adapter.

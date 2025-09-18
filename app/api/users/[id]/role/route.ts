@@ -9,7 +9,7 @@ import { UpdateUserRoleSchema } from "@/schemas"
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession({
     ...authConfig,
@@ -34,7 +34,7 @@ export async function PATCH(
     )
   }
 
-  const { id } = params
+  const { id } = await context.params
 
   if (!id) {
     return NextResponse.json({ error: "Missing user id" }, { status: 400 })

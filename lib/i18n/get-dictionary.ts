@@ -81,6 +81,7 @@ export type BaseDictionary = {
       home: string
       dashboard: string
       admin: string
+      users: string
     }
     pageTitle: string
     pageDescription: string
@@ -89,6 +90,48 @@ export type BaseDictionary = {
       management: string
     }
     quickLinkLabel: string
+    usersPage: {
+      title: string
+      description: string
+      searchPlaceholder: string
+      roleFilterLabel: string
+      roleFilterAll: string
+      table: {
+        columns: {
+          name: string
+          email: string
+          role: string
+          createdAt: string
+        }
+        empty: string
+        noName: string
+        previous: string
+        next: string
+        actions: string
+      }
+      actions: {
+        label: string
+        changeRole: string
+        delete: string
+      }
+      roleDialog: {
+        title: string
+        description: string
+        selectLabel: string
+        submit: string
+        cancel: string
+        success: string
+        error: string
+      }
+      deleteDialog: {
+        title: string
+        description: string
+        confirm: string
+        cancel: string
+        success: string
+        error: string
+      }
+    }
   }
   dashboard: {
     breadcrumb: {
