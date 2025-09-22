@@ -30,6 +30,48 @@ First-Class pairs authenticated SaaS scaffolding with multilingual routing so yo
 - **Internationalization:** Custom locale router (`/` for English, `/th` for Thai) with dictionary loader
 - **Tooling:** ESLint 9 (Next.js config), TypeScript, Turbopack dev/build
 
+## Database Structure
+
+```json
+{
+  "Role": {
+    "type": "enum",
+    "values": ["ADMIN", "STAFF", "USER"]
+  },
+  "User": {
+    "id": "String @id @default(cuid())",
+    "name": "String?",
+    "email": "String @unique",
+    "emailVerified": "DateTime?",
+    "image": "String?",
+    "password": "String?",
+    "role": "Role @default(USER)",
+    "accounts": "Account[]",
+    "createdAt": "DateTime @default(now())",
+    "updatedAt": "DateTime @updatedAt"
+  },
+"Account": {
+    "userId": "String",
+    "type": "String",
+    "provider": "String",
+    "providerAccountId": "String",
+    "refresh_token": "String?",
+    "access_token": "String?",
+    "expires_at": "Int?",
+    "token_type": "String?",
+    "scope": "String?",
+    "id_token": "String?",
+    "session_state": "String?",
+    "createdAt": "DateTime @default(now())",
+    "updatedAt": "DateTime @updatedAt",
+    "@id": "[provider, providerAccountId]",
+    "@relation": "user User @relation(fields: [userId], references: [id], onDelete: Cascade)"
+  }
+}
+```
+
+> ℹ️ **Note:** `Account` is created by the NextAuth Prisma adapter. When you only use credential-based login it stays empty, but it becomes important if you add OAuth/social providers later, so keep the name as-is.
+
 ## Project Structure
 
 ```
