@@ -1,6 +1,7 @@
 import type { DefaultSession, DefaultUser } from "next-auth"
 
 import type { AppUserRole } from "@/lib/auth/roles"
+import type { DeviceInfo } from "@/schemas"
 
 declare module "next-auth" {
   interface Session {
@@ -12,6 +13,8 @@ declare module "next-auth" {
 
   interface User extends DefaultUser {
     role: AppUserRole
+    lastLoginAt: Date | null
+    lastLoginDevice: DeviceInfo | null
   }
 }
 

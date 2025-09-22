@@ -101,16 +101,19 @@ export type BaseDictionary = {
           name: string
           email: string
           role: string
+          lastLogin: string
           createdAt: string
         }
         empty: string
         noName: string
+        neverLoggedIn: string
         previous: string
         next: string
         actions: string
       }
       actions: {
         label: string
+        deviceInfo: string
         changeRole: string
         delete: string
       }
@@ -122,6 +125,24 @@ export type BaseDictionary = {
         cancel: string
         success: string
         error: string
+      }
+      deviceDialog: {
+        title: string
+        description: string
+        empty: string
+        close: string
+        notAvailable: string
+        fields: {
+          lastLoginAt: string
+          deviceType: string
+          os: string
+          browser: string
+          ip: string
+          country: string
+          region: string
+          city: string
+          userAgent: string
+        }
       }
       deleteDialog: {
         title: string

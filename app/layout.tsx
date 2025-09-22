@@ -4,6 +4,7 @@ import { cookies } from "next/headers"
 import "./globals.css"
 
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 import {
   COLOR_THEME_STORAGE_KEY,
   DEFAULT_COLOR_THEME,
@@ -48,6 +49,7 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
+          <Toaster richColors closeButton position="top-right" />
         </ThemeProvider>
       </body>
     </html>

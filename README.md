@@ -48,7 +48,23 @@ First-Class pairs authenticated SaaS scaffolding with multilingual routing so yo
     "role": "Role @default(USER)",
     "accounts": "Account[]",
     "createdAt": "DateTime @default(now())",
-    "updatedAt": "DateTime @updatedAt"
+    "updatedAt": "DateTime @updatedAt",
+    "lastLoginAt": "DateTime?",
+    "lastLoginDevice": {
+      "type": "Json?",
+      "example": {
+        "ua": "Mozilla/5.0 ...",
+        "os": "iOS",
+        "browser": "Safari",
+        "device_type": "mobile",
+        "ip": "203.0.113.4",
+        "geo": {
+          "country": "TH",
+          "region": "10",
+          "city": "Bangkok"
+        }
+      }
+    }
   },
 "Account": {
     "userId": "String",
@@ -71,6 +87,66 @@ First-Class pairs authenticated SaaS scaffolding with multilingual routing so yo
 ```
 
 > ℹ️ **Note:** `Account` is created by the NextAuth Prisma adapter. When you only use credential-based login it stays empty, but it becomes important if you add OAuth/social providers later, so keep the name as-is.
+
+## Device Tracking
+
+- Every credentials login updates `User.lastLoginAt` with the current timestamp.
+- The accompanying `User.lastLoginDevice` JSON stores a compact fingerprint:
+
+  ```json
+  {
+    "ua": "Mozilla/5.0 ...",
+    "os": "iOS",
+    "browser": "Safari",
+    "device_type": "mobile",
+    "ip": "203.0.113.4",
+    "geo": {
+      "country": "TH",
+      "region": "10",
+      "city": "Bangkok"
+    }
+  }
+  ```
+
+- Device signals come from standard proxy headers (`x-forwarded-for`, `x-real-ip`, `x-vercel-ip-*`, `cf-ipcountry`). When they’re unavailable, the fields are `null` and `device_type` falls back to `"unknown"`.
+- The admin users API (`GET /api/users`) exposes both fields for audit dashboards or account monitoring.
+- Device payloads are validated with a dedicated Zod schema (`DeviceInfoSchema`), ensuring malformed metadata is discarded before it reaches the database or response bodies.
+
+## Validation
+
+- Credential and registration forms rely on Zod schemas (`LoginSchema`, `RegisterSchema`) for server-side validation.
+- Admin role updates use `UpdateUserRoleSchema` to whitelist valid role transitions before PATCH requests are sent.
+- Device fingerprint JSON is enforced by `DeviceInfoSchema`, which normalizes user-agent, OS, browser, IP, and geo fields when users sign in.
+
+## Build Guidelines (AI Prompt Cheatsheet)
+
+**UI**
+- Use existing shadcn/ui primitives and Tailwind utility classes already present in the project.
+- Prefer native shadcn components before introducing bespoke UI or third-party widgets.
+- Trigger user feedback via Sonner toasts (`toast.success`, `toast.error`) rather than inline banners.
+- Keep action buttons consistent: default size, `variant="outline"` when matching current admin table actions.
+- Follow the established dialog and alert patterns when adding modals (import from `@/components/ui/dialog` or `@/components/ui/alert-dialog`).
+
+**Routing & Access**
+- Place new API/routes under `app/…/route.ts` using Next.js App Router conventions.
+- Gate protected endpoints with `getServerSession({ …authConfig, …authOptions })` and `hasAccessToPath` to align with current RBAC checks.
+- Update `ROUTE_ACCESS_RULES` in `lib/auth/permissions.ts` when new pages require specific roles, and keep role constants in `lib/auth/roles.ts` as the single source of truth.
+- Use `buildLocalizedPath` and locale-aware components when linking within dashboard views.
+
+**Navigation**
+- Extend navigation via `components/app-sidebar.tsx` and keep menu copy in locale dictionaries for consistency.
+- Ensure sidebar entries respect `hasAccessToPath` so STAFF/USER roles only see routes they can open.
+- Mirror breadcrumb patterns in the dashboard admin pages when adding new sections.
+
+**Validation & Data**
+- Back new forms/endpoints with Zod schemas in `schemas/index.ts` and parse inputs before hitting Prisma.
+- Serialize Prisma results with `toISOString()` for dates and Zod guards (e.g., `DeviceInfoSchema`) before returning to clients.
+- Update `types/next-auth.d.ts` when augumenting session or user payloads so hooks/components receive strong typing.
+
+**Styling & Localization**
+- Mirror CSS class structures from existing pages; prefer server components for layout, client components for interactivity.
+- Add copy to `locales/en.ts` and `locales/th.ts`, and adjust `lib/i18n/get-dictionary.ts` typings if you introduce new strings.
+- Ensure new UI follows responsive patterns present in `app/dashboard/**` (flex layouts, `sm:` breakpoints, etc.).
 
 ## Project Structure
 

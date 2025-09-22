@@ -31,6 +31,7 @@ import type { Locale } from "@/lib/i18n/config"
 import { buildLocalizedPath } from "@/lib/i18n/routing"
 import { getDictionary } from "@/lib/i18n/get-dictionary"
 import prisma from "@/lib/prisma"
+import { DeviceInfoSchema } from "@/schemas"
 
 import { UserTable } from "./user-table"
 
@@ -60,6 +61,8 @@ export async function renderAdminUsersPage(locale: Locale) {
       email: true,
       role: true,
       createdAt: true,
+      lastLoginAt: true,
+      lastLoginDevice: true,
     },
   })
 
@@ -69,15 +72,24 @@ export async function renderAdminUsersPage(locale: Locale) {
     day: "numeric",
   })
 
-  const tableData = users.map((user) => ({
-    id: user.id,
-    name: user.name ?? copy.table.noName,
-    email: user.email,
-    role: user.role,
-    roleLabel: dictionary.userRoles[user.role],
-    createdAtISO: user.createdAt.toISOString(),
-    createdAtLabel: dateFormatter.format(user.createdAt),
-  }))
+  const tableData = users.map((user) => {
+    const parsedDevice = DeviceInfoSchema.safeParse(user.lastLoginDevice)
+
+    return {
+      id: user.id,
+      name: user.name ?? copy.table.noName,
+      email: user.email,
+      role: user.role,
+      roleLabel: dictionary.userRoles[user.role],
+      createdAtISO: user.createdAt.toISOString(),
+      createdAtLabel: dateFormatter.format(user.createdAt),
+      lastLoginISO: user.lastLoginAt?.toISOString() ?? null,
+      lastLoginLabel: user.lastLoginAt
+        ? dateFormatter.format(user.lastLoginAt)
+        : copy.table.neverLoggedIn,
+      lastLoginDevice: parsedDevice.success ? parsedDevice.data : null,
+    }
+  })
 
   const roleFilters = USER_ROLES.map((role) => ({
     value: role,
@@ -139,6 +151,7 @@ export async function renderAdminUsersPage(locale: Locale) {
                   roleFilterLabel: copy.roleFilterLabel,
                   roleFilterAll: copy.roleFilterAll,
                   empty: copy.table.empty,
+                  neverLoggedIn: copy.table.neverLoggedIn,
                   columns: copy.table.columns,
                   pagination: {
                     previous: copy.table.previous,
@@ -147,9 +160,11 @@ export async function renderAdminUsersPage(locale: Locale) {
                   actions: {
                     header: copy.table.actions,
                     label: copy.actions.label,
+                    deviceInfo: copy.actions.deviceInfo,
                     changeRole: copy.actions.changeRole,
                     delete: copy.actions.delete,
                   },
+                  deviceDialog: copy.deviceDialog,
                   roleDialog: copy.roleDialog,
                   deleteDialog: copy.deleteDialog,
                 }}
