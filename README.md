@@ -64,7 +64,9 @@ First-Class pairs authenticated SaaS scaffolding with multilingual routing so yo
           "city": "Bangkok"
         }
       }
-    }
+    },
+    "themePreference": "String @default(\"system\")",
+    "colorThemePreference": "String @default(\"neutral\")"
   },
 "Account": {
     "userId": "String",
@@ -112,6 +114,13 @@ First-Class pairs authenticated SaaS scaffolding with multilingual routing so yo
 - The admin users API (`GET /api/users`) exposes both fields for audit dashboards or account monitoring.
 - Device payloads are validated with a dedicated Zod schema (`DeviceInfoSchema`), ensuring malformed metadata is discarded before it reaches the database or response bodies.
 
+## User Preferences
+
+- Theme mode (`system`, `light`, `dark`) and accent palette (`neutral`, `apricot`, …) persist per user in `User.themePreference` and `User.colorThemePreference`.
+- Updates flow through `PATCH /api/settings`, which validates payloads with `UpdateUserPreferencesSchema` and returns the normalized settings.
+- Language selection stores in `User.languagePreference`, ensuring subsequent redirects and dictionaries default to the user’s preferred locale inside the authenticated app.
+- Authenticated layouts hydrate user preferences on load, while unauthenticated surfaces (`/`, `/login`, `/signup`) reset to the default system theme and neutral palette via the client preferences applier and `DEFAULT_THEME_PREFERENCE`/`DEFAULT_COLOR_THEME`.
+
 ## Validation
 
 - Credential and registration forms rely on Zod schemas (`LoginSchema`, `RegisterSchema`) for server-side validation.
@@ -126,6 +135,8 @@ First-Class pairs authenticated SaaS scaffolding with multilingual routing so yo
 - Trigger user feedback via Sonner toasts (`toast.success`, `toast.error`) rather than inline banners.
 - Keep action buttons consistent: default size, `variant="outline"` when matching current admin table actions.
 - Follow the established dialog and alert patterns when adding modals (import from `@/components/ui/dialog` or `@/components/ui/alert-dialog`).
+- Persist settings through `PATCH /api/settings` when adding new toggles that affect per-user preferences.
+- When adding new theme-like controls, integrate with `DEFAULT_THEME_PREFERENCE`, `DEFAULT_COLOR_THEME`, and `resetClientPreferences()` so unauthenticated pages stay clean after logout.
 
 **Routing & Access**
 - Place new API/routes under `app/…/route.ts` using Next.js App Router conventions.
@@ -142,6 +153,8 @@ First-Class pairs authenticated SaaS scaffolding with multilingual routing so yo
 - Back new forms/endpoints with Zod schemas in `schemas/index.ts` and parse inputs before hitting Prisma.
 - Serialize Prisma results with `toISOString()` for dates and Zod guards (e.g., `DeviceInfoSchema`) before returning to clients.
 - Update `types/next-auth.d.ts` when augumenting session or user payloads so hooks/components receive strong typing.
+- Keep user preference enums (`lib/user-preferences.ts`, `lib/color-theme.ts`) in sync when expanding theme or accent options.
+- Extend `SUPPORTED_LOCALES` if you introduce languages, and mirror the change in preference schemas so stored language preferences remain valid.
 
 **Styling & Localization**
 - Mirror CSS class structures from existing pages; prefer server components for layout, client components for interactivity.

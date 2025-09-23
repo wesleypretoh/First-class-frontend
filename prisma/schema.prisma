@@ -14,19 +14,23 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          Role      @default(USER)
-  accounts      Account[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLoginAt   DateTime?
-  lastLoginDevice Json?
+  id                   String   @id @default(cuid())
+  name                 String?
+  email                String   @unique
+  emailVerified        DateTime?
+  image                String?
+  password             String?
+  role                 Role     @default(USER)
+  accounts             Account[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  lastLoginAt          DateTime?
+  lastLoginDevice      Json?
+  themePreference      String   @default("system")
+  colorThemePreference String   @default("neutral")
+  languagePreference   String   @default("en")
 }
+
 
 model Account {
   userId            String

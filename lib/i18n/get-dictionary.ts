@@ -27,6 +27,14 @@ export type SettingsDictionary = {
     title: string
     description: string
   }
+  notifications: {
+    themeUpdated: string
+    themeUpdateError: string
+    colorThemeUpdated: string
+    colorThemeUpdateError: string
+    languageUpdated: string
+    languageUpdateError: string
+  }
 }
 
 export type BaseDictionary = {

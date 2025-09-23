@@ -1,6 +1,13 @@
 import { z } from "zod"
 
 import { USER_ROLES } from "@/lib/auth/roles"
+import { COLOR_THEME_OPTIONS, type ColorThemeValue } from "@/lib/color-theme"
+import {
+  LANGUAGE_PREFERENCE_OPTIONS,
+  THEME_OPTIONS,
+  type LanguagePreference,
+  type ThemePreference,
+} from "@/lib/user-preferences"
 
 export const LoginSchema = z.object({
   email: z.string().email({ message: "Email is required" }),
@@ -33,3 +40,47 @@ export const DeviceInfoSchema = z.object({
 })
 
 export type DeviceInfo = z.infer<typeof DeviceInfoSchema>
+
+const THEME_PREFERENCE_VALUES = THEME_OPTIONS.map((option) => option.value)
+const COLOR_THEME_VALUES = COLOR_THEME_OPTIONS.map((option) => option.value)
+const LANGUAGE_PREFERENCE_VALUES = LANGUAGE_PREFERENCE_OPTIONS.map(
+  (option) => option.value,
+)
+
+export const UpdateUserPreferencesSchema = z
+  .object({
+    theme: z.enum(THEME_PREFERENCE_VALUES as [ThemePreference, ...ThemePreference[]]).optional(),
+    colorTheme: z
+      .enum(COLOR_THEME_VALUES as [ColorThemeValue, ...ColorThemeValue[]])
+      .optional(),
+    language: z
+      .enum(LANGUAGE_PREFERENCE_VALUES as [LanguagePreference, ...LanguagePreference[]])
+      .optional(),
+  })
+  .refine(
+    (value) =>
+      value.theme !== undefined ||
+      value.colorTheme !== undefined ||
+      value.language !== undefined,
+    {
+    message: "At least one preference must be provided",
+    },
+  )
+
+export const ThemePreferenceSchema = z.enum(
+  THEME_PREFERENCE_VALUES as [ThemePreference, ...ThemePreference[]],
+)
+
+export const ColorThemePreferenceSchema = z.enum(
+  COLOR_THEME_VALUES as [ColorThemeValue, ...ColorThemeValue[]],
+)
+
+export const LanguagePreferenceSchema = z.enum(
+  LANGUAGE_PREFERENCE_VALUES as [LanguagePreference, ...LanguagePreference[]],
+)
+
+export type UserPreferencesPayload = {
+  theme?: ThemePreference
+  colorTheme?: ColorThemeValue
+  language?: LanguagePreference
+}

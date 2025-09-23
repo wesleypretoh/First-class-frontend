@@ -1,7 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSession } from "next-auth/react"
+import {
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation"
+import { toast } from "sonner"
 
 import {
   Select,
@@ -18,15 +24,29 @@ import {
 } from "@/lib/i18n/routing"
 import { cn } from "@/lib/utils"
 
+const LOCALE_VALUES = new Set<Locale>(SUPPORTED_LOCALES)
+
+const resolveLocale = (value: string): Locale =>
+  LOCALE_VALUES.has(value as Locale) ? (value as Locale) : DEFAULT_LOCALE
+
 type LanguageSelectProps = {
   dictionary: Dictionary
   triggerClassName?: string
+  successMessage?: string
+  errorMessage?: string
 }
 
-export function LanguageSelect({ dictionary, triggerClassName }: LanguageSelectProps) {
+export function LanguageSelect({
+  dictionary,
+  triggerClassName,
+  successMessage,
+  errorMessage,
+}: LanguageSelectProps) {
+  const { data: session, status, update } = useSession()
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = React.useTransition()
 
   const { locale: currentLocale, segments } = React.useMemo(
     () => extractLocaleFromPathname(pathname ?? "/"),
@@ -42,25 +62,113 @@ export function LanguageSelect({ dictionary, triggerClassName }: LanguageSelectP
     [dictionary],
   )
 
+  const persistPreference = React.useCallback(async (language: Locale) => {
+    const response = await fetch("/api/settings", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ language }),
+    })
+
+    if (!response.ok) {
+      throw new Error("language-update-failed")
+    }
+
+    return language
+  }, [])
+
   const handleChange = React.useCallback(
     (next: string) => {
-      const normalized = SUPPORTED_LOCALES.includes(next as Locale)
-        ? (next as Locale)
-        : DEFAULT_LOCALE
+      const normalized = resolveLocale(next)
+
+      if (normalized === currentLocale) {
+        return
+      }
 
       const targetPath = buildPathnameFromSegments(normalized, segments)
       const query = searchParams?.toString()
-      const url = query ? `${targetPath}?${query}` : targetPath
+      const nextUrl = query ? `${targetPath}?${query}` : targetPath
+      const label = dictionary.languageNames[normalized] ?? normalized
 
-      router.replace(url)
+      if (status !== "authenticated") {
+        if (typeof document !== "undefined") {
+          document.documentElement.lang = normalized
+        }
+        if (successMessage) {
+          toast.success(
+            `${successMessage}${successMessage.endsWith(".") ? "" : ":"} ${label}`,
+          )
+        }
+
+        router.replace(nextUrl)
+        return
+      }
+
+      startTransition(() => {
+        toast.promise(
+          (async () => {
+            await persistPreference(normalized)
+
+            if (update) {
+              await update({
+                user: {
+                  ...(session?.user ?? {}),
+                  languagePreference: normalized,
+                },
+              })
+            }
+
+            return normalized
+          })(),
+          {
+            loading: "Saving language…",
+            success: (savedLocale) => {
+              const successLabel =
+                dictionary.languageNames[savedLocale] ?? savedLocale
+
+              if (typeof document !== "undefined") {
+                document.documentElement.lang = savedLocale
+              }
+
+              router.replace(nextUrl)
+
+              return successMessage
+                ? `${successMessage}${successMessage.endsWith(".") ? "" : ":"} ${successLabel}`
+                : `Language updated: ${successLabel}`
+            },
+            error: () => errorMessage ?? "Unable to update language",
+          },
+        )
+      })
     },
-    [router, searchParams, segments],
+    [
+      currentLocale,
+      dictionary.languageNames,
+      errorMessage,
+      persistPreference,
+      router,
+      searchParams,
+      segments,
+      session?.user,
+      status,
+      successMessage,
+      update,
+    ],
   )
 
   return (
-    <Select value={currentLocale} onValueChange={handleChange}>
+    <Select
+      value={currentLocale}
+      onValueChange={handleChange}
+      disabled={isPending}
+    >
       <SelectTrigger className={cn("h-9", triggerClassName)}>
-        <SelectValue placeholder={dictionary.languageNames[currentLocale] ?? "Select language"} />
+        <SelectValue
+          placeholder={
+            dictionary.languageNames[currentLocale] ?? "Select language"
+          }
+        />
       </SelectTrigger>
       <SelectContent>
         {options.map((option) => (

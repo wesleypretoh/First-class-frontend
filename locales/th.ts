@@ -77,6 +77,14 @@ const dictionary: BaseDictionary = {
       title: "ภาษา",
       description: "ดูตัวอย่างแดชบอร์ดในภาษาไทยหรือภาษาอังกฤษ",
     },
+    notifications: {
+      themeUpdated: "อัปเดตธีมแล้ว",
+      themeUpdateError: "ไม่สามารถอัปเดตธีมได้",
+      colorThemeUpdated: "อัปเดตชุดสีแล้ว",
+      colorThemeUpdateError: "ไม่สามารถอัปเดตชุดสีได้",
+      languageUpdated: "เปลี่ยนภาษาเรียบร้อย",
+      languageUpdateError: "ไม่สามารถเปลี่ยนภาษาได้",
+    },
   },
   admin: {
     breadcrumb: {

@@ -79,6 +79,14 @@ const dictionary: BaseDictionary = {
       title: "Language",
       description: "Preview how the dashboard could look in English or Thai.",
     },
+    notifications: {
+      themeUpdated: "Theme updated",
+      themeUpdateError: "Unable to update theme",
+      colorThemeUpdated: "Accent palette updated",
+      colorThemeUpdateError: "Unable to update accent palette",
+      languageUpdated: "Language updated",
+      languageUpdateError: "Unable to update language",
+    },
   },
   admin: {
     breadcrumb: {

@@ -3,13 +3,19 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { cookies } from "next/headers"
 import "./globals.css"
 
+import { getServerSession } from "next-auth"
+
 import { ThemeProvider } from "@/components/theme-provider"
+import { UserPreferencesApplier } from "@/components/user-preferences-applier"
 import { Toaster } from "@/components/ui/sonner"
+import { AuthSessionProvider } from "@/components/auth-session-provider"
 import {
   COLOR_THEME_STORAGE_KEY,
   DEFAULT_COLOR_THEME,
   resolveColorTheme,
 } from "@/lib/color-theme"
+import authConfig from "@/auth.config"
+import { authOptions } from "@/lib/auth-options"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,23 +40,35 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await getServerSession({
+    ...authConfig,
+    ...authOptions,
+  })
+  const isAuthenticated = Boolean(session?.user)
+
   const cookieStore = await cookies()
   const colorThemeCookie = cookieStore.get(COLOR_THEME_STORAGE_KEY)?.value
-  const initialColorTheme = resolveColorTheme(colorThemeCookie)
+  const initialColorTheme = isAuthenticated
+    ? resolveColorTheme(colorThemeCookie)
+    : DEFAULT_COLOR_THEME
   const dataColorThemeValue =
     initialColorTheme === DEFAULT_COLOR_THEME ? undefined : initialColorTheme
+  const htmlLang = session?.user?.languagePreference ?? "en"
 
   return (
     <html
-      lang="en"
+      lang={htmlLang}
       suppressHydrationWarning
       data-color-theme={dataColorThemeValue}
     >
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-          <Toaster richColors closeButton position="top-right" />
-        </ThemeProvider>
+        <AuthSessionProvider session={session}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <UserPreferencesApplier />
+            {children}
+            <Toaster richColors closeButton position="top-right" />
+          </ThemeProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   )

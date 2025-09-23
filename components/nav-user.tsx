@@ -32,6 +32,7 @@ import {
   buildLocalizedPath,
   extractLocaleFromPathname,
 } from "@/lib/i18n/routing";
+import { resetClientPreferences } from "@/lib/user-preferences";
 
 type NavUserLabels = {
   upgrade: string;
@@ -144,6 +145,7 @@ export function NavUser({
             <DropdownMenuItem
               onSelect={(event) => {
                 event.preventDefault();
+                resetClientPreferences();
                 void signOut({
                   callbackUrl: buildLocalizedPath(locale, "login"),
                 });

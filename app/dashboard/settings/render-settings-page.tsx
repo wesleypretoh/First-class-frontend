@@ -32,6 +32,8 @@ import type { Locale } from "@/lib/i18n/config"
 import { buildLocalizedPath } from "@/lib/i18n/routing"
 import { getDictionary } from "@/lib/i18n/get-dictionary"
 import { hasAccessToPath } from "@/lib/auth/permissions"
+import { DEFAULT_COLOR_THEME } from "@/lib/color-theme"
+import { DEFAULT_THEME_PREFERENCE } from "@/lib/user-preferences"
 
 export async function renderSettingsPage(locale: Locale) {
   const session = await getServerSession({
@@ -48,6 +50,9 @@ export async function renderSettingsPage(locale: Locale) {
   }
 
   const dictionary = await getDictionary(locale)
+  const userThemePreference = session.user.themePreference ?? DEFAULT_THEME_PREFERENCE
+  const userColorThemePreference =
+    session.user.colorThemePreference ?? DEFAULT_COLOR_THEME
 
   return (
     <SidebarProvider>
@@ -103,7 +108,11 @@ export async function renderSettingsPage(locale: Locale) {
                     </p>
                   </div>
                   <div className="md:w-56">
-                    <ThemeSelect />
+                    <ThemeSelect
+                      initialValue={userThemePreference}
+                      successMessage={dictionary.settings.notifications.themeUpdated}
+                      errorMessage={dictionary.settings.notifications.themeUpdateError}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -116,7 +125,11 @@ export async function renderSettingsPage(locale: Locale) {
                     </p>
                   </div>
                   <div className="md:w-56">
-                    <ColorThemeSelect />
+                    <ColorThemeSelect
+                      initialValue={userColorThemePreference}
+                      successMessage={dictionary.settings.notifications.colorThemeUpdated}
+                      errorMessage={dictionary.settings.notifications.colorThemeUpdateError}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -129,7 +142,11 @@ export async function renderSettingsPage(locale: Locale) {
                     </p>
                   </div>
                   <div className="md:w-56">
-                    <LanguageSelect dictionary={dictionary} />
+                    <LanguageSelect
+                      dictionary={dictionary}
+                      successMessage={dictionary.settings.notifications.languageUpdated}
+                      errorMessage={dictionary.settings.notifications.languageUpdateError}
+                    />
                   </div>
                 </div>
               </div>
